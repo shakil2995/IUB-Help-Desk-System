@@ -1,0 +1,257 @@
+<div class="users_container" @fadeInOut>
+
+    <div class="heading" fxLayout="row"  fxLayoutAlign="space-between center" >
+        <h1 class="title" fxFlex>Ticket List </h1>
+        <button mat-stroked-button matTooltip="Add New Client" matTooltipPosition="above" class="add_button" (click)="create_new()">
+            <mat-icon>add</mat-icon>
+            <span>Create New Ticket</span>
+        </button>
+     </div>
+    <div class="utilities_section" fxLayout="row"  fxLayoutAlign="space-between start" fxLayoutGap="16px" >
+        <div class="search_bar" fxFlex="70" fxLayout="row"  fxLayoutAlign="space-between start" fxLayoutGap="16px"  >
+            <mat-form-field fxFlex="1 0 auto"  appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput  [formControl]="search" placeholder="Type here to search">
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+            <mat-form-field fxFlex="0 1 auto">
+                <mat-select [(ngModel)]="filterselect"  (selectionChange)="filterCriteriaChange()">
+                    <mat-option *ngFor="let item of filter" [value]="item.val">
+                        {{item.view}}
+                    </mat-option>
+                </mat-select>
+             </mat-form-field>
+            
+        </div>
+        <div class="export_section"  fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="end start">
+            
+            <button mat-mini-fab color="accent" matTooltip="Print" matTooltipPosition="above" [useExistingCss]="true"  mat-icon-button printSectionId="print-section" ngxPrint>
+                <mat-icon>print</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" matTooltip="Export in Excel" (click)="excelExport()" matTooltipPosition="above">
+                <mat-icon>get_app</mat-icon>
+            </button>
+            <!-- <button mat-mini-fab color="accent" matTooltip="Download as PDF" matTooltipPosition="above">
+                <mat-icon>picture_as_pdf</mat-icon>
+            </button> -->
+            
+        </div>
+    </div>
+    <div class="grid-view table_container" >
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <table mat-table fxFlex #table matSort [dataSource]="table_material_data" multiTemplateDataRows [@animateStagger]="{value:'50'}">
+                
+                <!-- Data Column (using loop)-->
+                <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column.field}}">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.display}}</th>
+                    <td mat-cell *matCellDef="let element">
+                        
+
+                        <div [ngSwitch]="column.field">
+
+                            <p *ngSwitchCase="'priority'" >
+                                <span [ngSwitch]="true" class="status">
+                                    <p  class="text-truncate" style="background: #02860d" *ngSwitchCase="element.priority == 'low' ">
+                                        Low
+                                    </p>
+                                    <p  class="text-truncate" style="background: rgb(199, 81, 3)" *ngSwitchCase="element.priority == 'high' ">
+                                        High
+                                    </p>
+                                    <p  class="text-truncate" style="background: rgb(0, 94, 182)" *ngSwitchCase="element.priority == 'medium' ">
+                                        Medium
+                                    </p>
+                                    
+                                </span>
+                            </p>
+
+                            <p *ngSwitchCase="'resolve_status'" [matMenuTriggerFor]="resolve_status_change_menu" aria-label="More" (click)="$event.stopPropagation()">
+
+                                <span [ngSwitch]="true" class="status" >
+                                    <p  class="text-truncate" style="background: #3f4fa7" *ngSwitchCase="element.resolve_status == 'in_progress' ">
+                                        In-progress
+                                    </p>
+                                    <p  class="text-truncate" style="background: rgb(214, 211, 0)" *ngSwitchCase="element.resolve_status == 'review' ">
+                                        Review
+                                    </p>
+                                    <p  class="text-truncate" style="background: green" *ngSwitchCase="element.resolve_status == 'done' ">
+                                        Done
+                                    </p>
+                                    <p  class="text-truncate" style="background: rgb(128, 0, 0)" *ngSwitchCase="element.resolve_status == 'cancelled' ">
+                                        Cancelled
+                                    </p>
+                                    <p class="text-truncate" style="background: rgb(214, 50, 0)" *ngSwitchDefault>
+                                        Open
+                                    </p>
+                                </span>
+                                <mat-menu #resolve_status_change_menu="matMenu">
+                                    <button mat-menu-item aria-label="remove" (click)="update_status('open',element)">
+                                        <span>Open</span>
+                                    </button>
+                                    <button mat-menu-item aria-label="remove" (click)="update_status('in_progress',element)">
+                                        <span>In progress</span>
+                                    </button> 
+                                    <button mat-menu-item aria-label="remove" (click)="update_status('review',element)">
+                                        <span>Review</span>
+                                    </button> 
+                                    
+                                    <button mat-menu-item aria-label="remove" (click)="update_status('done',element)">
+                                        <span>Done</span>
+                                    </button>
+                                    <button mat-menu-item aria-label="remove" (click)="update_status('cancelled',element)">
+                                        <span>Cancel</span>
+                                    </button>
+                                    
+                                </mat-menu>
+
+                            </p>
+
+                            <p *ngSwitchCase="'assigne_name'" [matMenuTriggerFor]="assigned_to_select_menu" aria-label="assigne" (click)="$event.stopPropagation()">
+                                <span>{{element.assigne_name ? element.assigne_name : 'Not assigned yet'}}</span>
+                                <mat-menu #assigned_to_select_menu="matMenu" >
+                                    <div (click)="$event.stopPropagation()">
+                                        <ng-container *ngIf="employeeList.length; else no_employee">
+                                            <autocomplete 
+                                            [datasource]="employeeList" fieldName="Search assigne" 
+                                            _appearance="standard"  _key="name"
+                                            (output)="assinedto_update($event,element)"></autocomplete>
+                                        </ng-container>
+                                        <ng-template #no_employee>
+                                            <span>No employee</span>   
+                                        </ng-template>
+                                        
+                                        
+                                         
+                                    </div>
+                                    
+                                </mat-menu>
+                                
+                            </p>
+
+                            <p class="text-truncate font-weight-400" *ngSwitchDefault>
+                                {{element[column.field] ? element[column.field] : '-' }}
+                            </p>
+                        </div>
+
+                    </td>
+                </ng-container>
+
+
+
+
+                <!-- Status -->
+                <!-- <ng-container matColumnDef="status">
+                    <th mat-header-cell *matHeaderCellDef >Resolve Status</th>
+                    <td mat-cell *matCellDef="let item" >
+                        <span [ngSwitch]="true" class="status">
+                            <p  class="text-truncate" style="background: #3f4fa7" *ngSwitchCase="item.resolve_status == 'in_progress' ">
+                                In-progress
+                            </p>
+                            <p  class="text-truncate" style="background: rgb(214, 211, 0)" *ngSwitchCase="item.resolve_status == 'review' ">
+                                Review
+                            </p>
+                            <p  class="text-truncate" style="background: green" *ngSwitchCase="item.resolve_status == 'done' ">
+                                Done
+                            </p>
+                            <p  class="text-truncate" style="background: rgb(128, 0, 0)" *ngSwitchCase="item.resolve_status == 'cancelled' ">
+                                Cancelled
+                            </p>
+                            <p class="text-truncate" style="background: rgb(214, 50, 0)" *ngSwitchDefault>
+                                Pending
+                            </p>
+                        </span>
+                        
+                    </td>
+                </ng-container> -->
+
+                <!-- details Column -->
+                <ng-container matColumnDef="details">
+                    <th mat-header-cell *matHeaderCellDef>Details</th>
+                    <td mat-cell *matCellDef="let element; let i = index">
+                        <div fxFlex="row" fxLayoutAlign="center center">
+                            <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+                                <mat-icon class="secondary-text">more_vert</mat-icon>
+                            </button>
+                            <mat-menu #moreMenu="matMenu">
+                                <button mat-menu-item aria-label="remove" (click)="update(element)">
+                                    <mat-icon>edit</mat-icon>
+                                    <span>Update</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+
+                    </td>
+                </ng-container> 
+            
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="columnsDefinations.length">
+                <div class="example-element-detail"  [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+                    <!-- Expanded Content section start  -->
+                    
+                    <div fxFlex   class="discussion_section">
+                        <p class="section_title">Description</p> 
+                        <p>{{element.description}}</p>
+                        <!-- <div class="discussion_container" fxLayout="column"   *ngFor="let discussion of element.discussion"> 
+                            <p></p>
+                        </div> -->
+                        
+                    </div>
+                     <!-- Expanded Content section start / -->
+
+                     
+                </div>
+                </td>
+            </ng-container>
+           
+
+
+                <tr mat-header-row *matHeaderRowDef="columnsDefinations"></tr>
+                <tr mat-row *matRowDef="let element; columns: columnsDefinations;"
+                    class="example-element-row"
+                    [class.example-expanded-row]="expandedElement === element"
+                    (click)="expandedElement = expandedElement === element ? null : element"  [@animate]="{value:'*',params:{y:'100%'}}">
+                </tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row" ></tr>
+                <tr mat-row *matNoDataRow >No data matching the filter</tr>
+            </table>
+        </div>
+        
+    </div>
+
+    <div>
+        <p style="text-align: center;" *ngIf="!data?.length">No Data Found</p>
+        <mat-paginator  [pageSizeOptions]="[5,7,10,20]" showFirstLastButtons>
+        </mat-paginator>
+    </div>
+
+</div>
+
+<!-- for print and excel export -->
+
+<div style="display: none;" id="print-section">
+    <div class="print_container">
+        <div class="print_heading">
+            <h1>Ticket List</h1>
+        </div>
+        <div class="print_content">
+            <table id="excel_sheet">
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th *ngFor="let item of displayedColumns">
+                            {{item.display}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr  *ngFor="let item of table_material_data?.filteredData;let i=index">
+                        <td>{{i+1}}</td>
+                        <td *ngFor="let column of displayedColumns">
+                            {{item[column.field]}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

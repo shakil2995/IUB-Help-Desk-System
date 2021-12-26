@@ -1,0 +1,7 @@
+Django >= 0
+psycopg2-binary==2.9.1
+djangorestframework==3.12
+django-cors-headers==3.4.0
+pyjwt == 2.3.0
+mysqlclient >=0
+django-import-export >=0

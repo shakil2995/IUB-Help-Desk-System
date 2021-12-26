@@ -1,0 +1,126 @@
+.dashboard_container{
+    margin: 1%;
+    height: auto;
+    .container{
+        padding: 10px;
+        background-color: #ececee;
+        border-radius: 5px;
+        #project_progressbar{
+            height: 10px;
+            border-radius: 5px;
+        }
+        .tabs_container{
+            margin: 10px 10px 0px 10px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            height: 400px;
+            overflow: scroll;
+            -ms-overflow-style: -ms-autohiding-scrollbar;  /* Internet Explorer 10+ */
+            scrollbar-width: none;  /* Firefox */
+            .empty_data{
+                text-align: center;
+            }
+            ::-webkit-scrollbar{
+                width: 2px !important;
+            }
+            .tabs{
+                height: auto;
+                width: 220px;
+                margin: 10px;
+                border-radius: 3px;
+                box-shadow: 0px 0px 2px 0px;
+                @media only screen and (max-width : 500px) {
+                    margin: 5px;
+                }
+                .heading{
+                    padding: 0px 8px;
+                    font-weight: bold;
+                    color:white;
+                    .icon{
+                        color:white;
+                    }
+                }
+                &.pending{ 
+                    background-color:  #fbf6f5;
+                    .heading{
+                        background-color: #cf5957;
+                    }
+                }
+                &.hold{ 
+                    background-color: #fcfdf4;
+                    .heading{
+                        background-color: #e9b938;
+                    }
+                }
+                &.cancelled{
+                    background-color: #f1a7a7;
+                    .heading{
+                        background-color: #af1a00;
+                    }
+                }
+                &.inprogress{
+                    background-color:#ebf2fd;
+                    .heading{
+                        background-color: #739df0 ;
+                    }
+                }
+                &.complete{
+                    background-color:#eff6ed;
+                    .heading{
+                        background-color: #73b258;
+                    }
+                }
+                
+                .tasks_container{
+                    margin: 10px;
+                    border-radius: 5px;
+                    max-height: 250px;
+                    overflow-y: scroll;
+                    
+                    .tasks{
+                        margin-bottom: 15px;
+                        background-color: white;
+                        padding: 10px;
+                        box-shadow: 0px 0px 1px 0px #cccccc;
+                        border-radius: 3px;
+                        
+                        .title{
+                            font-weight: bold;
+                            cursor: pointer;
+                        }
+                        .assigned_title{
+                            margin-right: 15px;
+                            margin-top: 20px;
+                        }
+                        .priority,.assinged{
+                            padding: 0px 5px;
+                            border-radius: 3px;
+                            &.high{
+                                  background-color: rgba(255, 0, 0, 0.048);
+                                  color:#cf5957
+                            }
+                            &.low{
+                                background-color: rgba(0, 255, 34, 0.048);
+                                color: #73b258;
+                            }
+                            &.normal{
+                                background-color: rgba(255, 230, 0, 0.048);
+                                color:#e9b938;
+                            }
+                        }
+                    }
+                }
+                .addbtn{
+                    margin-bottom: 10px;
+                }
+            }
+            
+        }
+        // .tabs_container:hover{
+        //     ::-webkit-scrollbar{
+        //         width: 10px !important;
+        //     }
+        // }
+    }
+}

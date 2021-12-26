@@ -1,0 +1,128 @@
+<div class="page_container" @fadeInOut>
+    <h1 class="title">{{PageTitle}} </h1>
+    <mat-tab-group  class="container-stretched-tabs" [(selectedIndex)]="tabIndex" (selectedIndexChange)="tabchange($event)" >
+        <mat-tab label="Role List" class="active_tab"> 
+           
+            <div class="search_bar"  fxLayout="row"  fxLayoutAlign="space-between start" fxLayoutGap="16px"  >
+                    <mat-form-field fxFlex="1 0 auto"  appearance="fill">
+                        <mat-label>Search</mat-label>
+                        <input matInput  [formControl]="search" placeholder="Type here to search">
+                        <mat-icon matPrefix>search</mat-icon>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="0 1 auto" appearance="fill" matTooltip="Filter" matTooltipPosition="above">
+                      <mat-label><mat-icon>filter_alt</mat-icon></mat-label>
+                        <mat-select [(ngModel)]="filterselect"  (selectionChange)="filterCriteriaChange()">
+                            <mat-option *ngFor="let item of filter" [value]="item.val">
+                                {{item.view}}
+                            </mat-option>
+                        </mat-select>
+                     </mat-form-field>
+            </div>
+                
+            <div class="grid-view table_container">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-table fxFlex="100" #table [dataSource]="table_material_data">
+
+                          <ng-container matColumnDef="si" >
+                              <mat-header-cell *matHeaderCellDef>S/N</mat-header-cell>
+                              <mat-cell *matCellDef="let i = index" > {{i+1}} </mat-cell>
+                              <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                          </ng-container>
+                            
+                            <ng-container [matColumnDef]="item.field" *ngFor="let item of columnsDefinations">
+                                <mat-header-cell *matHeaderCellDef> {{item.display}} </mat-header-cell>
+                                <mat-cell *matCellDef="let row" > {{row[item.field]}} </mat-cell>
+                                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="action">
+                                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                                <mat-cell *matCellDef="let element">
+                                    <div fxFlex="row" fxLayoutAlign="center center">
+                                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                                                (click)="$event.stopPropagation();">
+                                            <mat-icon class="secondary-text">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #moreMenu="matMenu">
+                                            <button mat-menu-item aria-label="remove" (click)="updateData(element)">
+                                                <mat-icon>edit</mat-icon>
+                                                <span>Update</span>
+                                            </button>
+                                            <button mat-menu-item aria-label="remove" (click)="deleteData(element)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Delete</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+            
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            <!-- <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row> -->
+                            <mat-row *matNoDataRow>
+                                No data matching the filter
+                            </mat-row>
+                        </mat-table> 
+                </div>
+                <p style="text-align: center;font-family: cursive;" *ngIf="!resourcedata?.length">No Data Found</p>
+                <mat-paginator *ngIf="resourcedata?.length" [pageSizeOptions]="[5,7,10,20]" showFirstLastButtons>
+                </mat-paginator>
+                
+            </div>
+            
+        </mat-tab>
+        <mat-tab label="New Role Entry" class="active_tab2">
+          <div class="form_body">
+            <mat-form-field class="role_name_field" appearance="fill" >
+              <mat-label>Group Name</mat-label>
+              <input type="text" matInput placeholder="Role Name">
+              <!-- <mat-icon matSuffix>person</mat-icon> -->
+            </mat-form-field>
+            <!-- <mat-divider> </mat-divider> -->
+            <span >
+              Select features :
+            </span>
+            <div fxLayout="row wrap" fxLayoutAlign="space-between start"  class="_row">
+              <section class="feature_section"   *ngFor="let main of Features_list; let i = index">
+                <ng-template #nodeTemplateRef let-node="node" > 
+      
+                  <div class="node" [class.node--selected]="( node === selectedTreeNode )">
+                    <span *ngIf="!node.children?.length">
+                      <mat-checkbox [(ngModel)]="node.permission" [color]="node.color" >{{node.title}}</mat-checkbox>
+                    </span>
+                    <span *ngIf="node.children?.length">
+                      <mat-checkbox class="node__label" style="font-weight: bold;" [(ngModel)]="node.permission"  [color]="node.color"
+                        [indeterminate]="node?.indeterminate"  (change)="setAll(node,$event.checked)">
+                        {{node.title}}
+                      </mat-checkbox>
+                    </span>
+                    <div *ngIf="node.children?.length" class="node__children">
+                      <ng-template ngFor let-child [ngForOf]="node.children">
+                        <!-- Invoke the recursive template. -->
+                        <ng-template [ngTemplateOutlet]="nodeTemplateRef" [ngTemplateOutletContext]="{ node: child }">
+                        </ng-template>
+      
+                      </ng-template>
+      
+                    </div>
+      
+                  </div>
+      
+                </ng-template>
+      
+                <!-- Initiate the recursive template rendering. -->
+                <ng-template [ngTemplateOutlet]="nodeTemplateRef" [ngTemplateOutletContext]="{ node: main}">
+                </ng-template>
+              </section>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <button mat-raised-button color="primary" *ngIf="!updateStatus" (click)="onFormSubmit()">Create</button>
+              <button mat-stroked-button *ngIf="updateStatus" (click)="onFormSubmit()">Update</button>
+            </div>
+      
+          </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+

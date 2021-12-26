@@ -1,0 +1,195 @@
+<div class="page_container" @fadeInOut>
+    <h1 class="title">User Management</h1>
+    <mat-tab-group  class="container-stretched-tabs" [(selectedIndex)]="tabIndex" (selectedIndexChange)="tabchange($event)" >
+        <mat-tab label="Users List" class="active_tab"> 
+           
+            <div class="search_bar"  fxLayout="row"  fxLayoutAlign="space-between start" fxLayoutGap="16px"  >
+                    <mat-form-field fxFlex="1 0 auto"  appearance="fill">
+                        <mat-label>Search</mat-label>
+                        <input matInput  [formControl]="search" placeholder="Type here to search">
+                        <mat-icon matPrefix>search</mat-icon>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="0 1 auto" appearance="fill" matTooltip="Filter" matTooltipPosition="above">
+                      <mat-label><mat-icon>filter_alt</mat-icon></mat-label>
+                        <mat-select [(ngModel)]="filterselect"  (selectionChange)="filterCriteriaChange()">
+                            <mat-option *ngFor="let item of filter" [value]="item.val">
+                                {{item.view}}
+                            </mat-option>
+                        </mat-select>
+                     </mat-form-field>
+            </div>
+                
+            <div class="grid-view table_container">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-table fxFlex="100" #table [dataSource]="table_material_data">
+
+                          <ng-container matColumnDef="si" >
+                              <mat-header-cell *matHeaderCellDef>S/N</mat-header-cell>
+                              <mat-cell *matCellDef="let i = index" > {{i+1}} </mat-cell>
+                              <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                          </ng-container>
+                            
+                            <ng-container [matColumnDef]="item.field" *ngFor="let item of columnsDefinations">
+                                <mat-header-cell *matHeaderCellDef> {{item.display}} </mat-header-cell>
+                                <mat-cell *matCellDef="let row" > {{row[item.field]}} </mat-cell>
+                                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="status" >
+                              <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                              <mat-cell *matCellDef="let row" > {{row.status == 0 ? 'Inactive' : 'Active'}} </mat-cell>
+                              <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                          </ng-container>
+                            <ng-container matColumnDef="action">
+                                <mat-header-cell *matHeaderCellDef>Action</mat-header-cell>
+                                <mat-cell *matCellDef="let element;let i = index">
+                                    <div fxFlex="row" fxLayoutAlign="center center">
+                                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                                                (click)="$event.stopPropagation();">
+                                            <mat-icon class="secondary-text">more_vert</mat-icon>
+                                        </button>
+                                        <mat-menu #moreMenu="matMenu">
+                                            <button mat-menu-item aria-label="remove" (click)="updateData(element)">
+                                                <mat-icon>edit</mat-icon>
+                                                <span>Update</span>
+                                            </button>
+                                            <button mat-menu-item aria-label="remove" (click)="deleteData(element,i)">
+                                                <mat-icon>delete</mat-icon>
+                                                <span>Delete</span>
+                                            </button>
+                                        </mat-menu>
+                                    </div>
+            
+                                </mat-cell>
+                                <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                            <!-- <mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></mat-footer-row> -->
+                            <mat-row *matNoDataRow>
+                                No data matching the filter
+                            </mat-row>
+                        </mat-table> 
+                </div>
+                <p style="text-align: center;font-family: cursive;" *ngIf="!resourcedata?.length">No Data Found</p>
+                <mat-paginator *ngIf="resourcedata?.length" [pageSizeOptions]="[5,7,10,20]" showFirstLastButtons>
+                </mat-paginator>
+                
+            </div>
+            
+        </mat-tab>
+        <mat-tab label="New User" class="active_tab2">
+          <form class="form_body" [formGroup]="user_form"  novalidate>
+            
+            <div class="user_information_container space_bottom">
+              <p class="title">User Information</p>
+              <div fxLayout="row" fxLayoutGap="16px">
+                <mat-form-field appearance="fill">
+                  <mat-label>First Name</mat-label>
+                    <input type="text" matInput placeholder="Enter First Name here" formControlName='f_name'
+                        required>
+                  <mat-error>Name is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>Last Name</mat-label>
+                    <input type="text" matInput placeholder="Enter Last Name here" formControlName='l_name'
+                        required>
+                  <mat-error>Last Name is required</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutGap="16px">
+                <!-- <mat-form-field appearance="fill">
+                  <mat-label>Branch</mat-label>
+                  <mat-select placeholder="Select Branch" formControlName='branch_id'>
+                    <mat-option *ngFor="let item of dummybranch" [value]="item.branch_id" >
+                      {{item.branchName}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error>Branch is required</mat-error>
+                </mat-form-field> -->
+                <mat-form-field appearance="fill">
+                  <mat-label>Employee ID</mat-label>
+                    <input type="text" matInput placeholder="Enter Employee ID" formControlName='employee_id'
+                        required>
+                  <mat-error>Employee ID is required</mat-error>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutGap="16px">
+                <mat-form-field appearance="fill">
+                  <mat-label>Designation</mat-label>
+                    <input type="text" matInput placeholder="Enter designation here" formControlName='designation' required>
+                  <mat-error>Designation is required</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="fill">
+                  <mat-label>Email</mat-label>
+                    <input type="email" matInput formControlName='email' required>
+                     <mat-error> Email is required</mat-error>
+                </mat-form-field>
+            </div>
+          </div>
+            
+            
+          <div class="user_permission_container" >
+            <p class="title">User Permission</p>
+            <div formArrayName="permission">
+                    <div *ngFor="let item of PermissionControl.controls; let pi = index">
+                        <div [formGroupName]="pi" >
+                            <div fxLayout="row" fxLayoutGap="10px" class="space_bottom" fxLayoutAlign="space-around center" >
+
+                                <!-- <mat-form-field appearance="fill" >
+                                  <mat-label>Branch</mat-label>
+                                  <mat-select placeholder="Select Branch" formControlName='branch'>
+                                    <mat-option *ngFor="let item of dummybranch" [value]="item.branch_id">
+                                      {{item.branchName}}
+                                    </mat-option>
+                                  </mat-select>
+                                  <mat-error>Branch is required</mat-error>
+                                </mat-form-field> -->
+
+                                <mat-form-field appearance="fill" >
+                                  <mat-label>Rule Group</mat-label>
+                                  <mat-select placeholder="Select Role" formControlName='role_id'>
+                                    <mat-option *ngFor="let item of Roles" [value]="item.role_id">
+                                      {{item.RoleName}}
+                                    </mat-option>
+                                  </mat-select>
+                                  <mat-error>Rule Group is required</mat-error>
+                                </mat-form-field>
+                                
+
+                                <!-- action button -->
+                                <div fxFlex="12"  fxLayout="row" fxLayoutGap="10px" >
+                                  <!-- <button mat-icon-button><mat-icon>icon_name</mat-icon></button> -->
+                                    <button type="button" mat-icon-button color="warn"   (click)="deletepermission(pi)" >
+                                            <mat-icon >delete</mat-icon>
+                                        </button>
+                                    <button type="button" mat-icon-button color="primary" *ngIf="PermissionControl.controls.length == pi+1" (click)="addpermission()" >
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                    
+                                  </div>
+
+
+
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+        </div> 
+ 
+            
+            <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+              <button mat-stroked-button color="primary" *ngIf="!updateStatus" matTooltip="Submit form" matTooltipPosition="above" (click)="onFormSubmit()">Submit</button>
+              <button mat-stroked-button color="primary" *ngIf="updateStatus" matTooltip="Update" matTooltipPosition="above" (click)="onFormSubmit()">Update</button>
+              <button mat-stroked-button color="primary"  matTooltip="Reset form" matTooltipPosition="above" type="reset" (click)="formReset()"  >Reset</button>
+
+            </div>
+      
+          </form>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+

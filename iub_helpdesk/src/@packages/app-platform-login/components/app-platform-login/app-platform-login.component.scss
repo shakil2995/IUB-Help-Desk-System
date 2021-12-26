@@ -1,0 +1,169 @@
+@import "src/@fuse/scss/fuse";
+
+app-platform-login {
+    #login {
+        width: 100%;
+        // background: url('/assets/images/backgrounds/restaurant.jpg') no-repeat;
+        // background-size: cover;
+        height: 100%;
+
+        #login-form-wrapper {
+            flex: 1 0 auto;
+            padding: 32px;
+           
+            @include media-breakpoint('xs') {
+                // padding: 16px;
+            }
+
+            #login-form {
+                // width: 384px;
+                width: 450px;
+                // max-width: 384px;
+               
+                text-align: center;
+                background: whitesmoke;
+                // border: 1px solid#dadce0;
+                // opacity: 0.9;
+                border-radius: 10px;
+                // @include mat-elevation(16);
+
+                @include media-breakpoint('xs') {
+                    padding: 0px;
+                    width: 100%;
+                    border:none;
+                }
+
+                .logo {
+                    width: 100%;
+                   img{
+                    //    width: 70px;
+                        width: 125px;
+                       border-radius: 3px;
+                       height: 100px;
+                   }
+                   margin: 10px 0px 10px 32px;
+                }
+
+                .title {
+                    font-size: 24px;
+                    padding : 16px 0px;
+                    font-family: 'Google Sans','Noto Sans Myanmar UI',arial,sans-serif;
+                    color : #ae5208;
+                    font-weight: bold;
+                    // margin: 10px 0px 10px 0px;
+                
+                }
+
+                form {
+                    width: 100%;
+                    text-align: left;
+                    padding: 32px;
+                    .mat-form-field {
+                        width: 100%;
+                        // font-size: 12px;
+                    }
+
+                    .mat-checkbox {
+                        margin: 0;
+                    }
+
+                    .remember-forgot-password {
+                       
+                        margin-top: 8px;
+
+                        .remember-me {
+                            margin-bottom: 16px;
+                            font-size: 12px;
+                        }
+
+                        .forgot-password {
+                            font-size: 12px;
+                            font-weight: bold;
+                            margin-bottom: 16px
+                        }
+                    }
+
+                    .submit-button {
+                        width: 100%;
+                        // margin: 16px auto;
+                        display: block;
+                        opacity: 1;
+                        border-radius: 2px;
+
+                        @include media-breakpoint('xs') {
+                            width: 90%;
+                        }
+                    }
+                }
+
+                .register {
+                    margin: 10px auto 24px auto;
+                    font-weight: 600;
+                    margin-top: 10px;
+
+                    .text {
+                        margin-right: 8px;
+                    }
+                }
+
+                .separator {
+                    font-size: 15px;
+                    font-weight: 600;
+                    margin: 24px auto;
+                    position: relative;
+                    overflow: hidden;
+                    width: 100px;
+
+                    .text {
+                        display: inline-flex;
+                        position: relative;
+                        padding: 0 8px;
+                        z-index: 9999;
+
+                        &:before,
+                        &:after {
+                            content: '';
+                            display: block;
+                            width: 30px;
+                            position: absolute;
+                            top: 10px;
+                            border-top: 1px solid;
+                        }
+
+                        &:before {
+                            right: 100%;
+                        }
+
+                        &:after {
+                            left: 100%;
+                        }
+                    }
+                }
+
+                button {
+
+                    &.google,
+                    &.facebook {
+                        width: 192px;
+                        text-transform: none;
+                        color: #FFFFFF;
+                        font-size: 13px;
+                    }
+
+                    @include media-breakpoint('xs') {
+                        width: 80%;
+                    }
+
+                    &.google {
+                        background-color: #D73D32;
+                        margin-bottom: 8px;
+                    }
+
+                    &.facebook {
+                        background-color: rgb(63, 92, 154);
+                    }
+                }
+            }
+        }
+    }
+}

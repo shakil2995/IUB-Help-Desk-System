@@ -1,0 +1,48 @@
+<div class="w-100-p">
+    <div class="mat-elevation-z1 mt-16">
+            <form action="" [formGroup]="filterForm">
+            <div fxLayout="row" class="p-10"  fxLayoutAlign="space-between center" fxLayoutGap="16px">
+                    <mat-form-field fxFlex="60">
+                        <input matInput (keyup)="applyFilter($event.target.value)" formControlName="inputfeild" placeholder="Type employee name or id">
+                    </mat-form-field>
+                    <mat-form-field fxFlex="20" >
+                        <mat-select placeholder= "Filter" (selectionChange)="SelectFilter($event.value)" formControlName="selectfeild">
+                            <mat-option *ngFor="let item of filterOptions" [value]="item.value">
+                                {{item.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                     </mat-form-field>
+                    <div fxFlex="20"  fxLayout="row"  fxLayoutAlign="end center" fxLayoutGap="10px">
+                            <button class="pl10" color="accent" mat-raised-button printSectionId="print-section" ngxPrint>Print</button>
+                    </div>
+                </div>
+        <table mat-table [dataSource]="tableDataSource" style="border: 1px solid #cccccc;">
+            <ng-container *ngFor="let item of dataTableConfig.columns" [matColumnDef]="item.fieldName">
+                <th mat-header-cell *matHeaderCellDef> {{item.displayName}} </th>
+                <td mat-cell *matCellDef="let element"> {{element[item.fieldName]}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsFieldName; sticky: true"></tr>
+            <tr mat-row (click)="getDetails(row)" *matRowDef="let row; columns: columnsFieldName;"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
+    </form>
+    </div>
+</div>
+
+<div id="print-section" style="display:none">
+        <div>
+            <h4 style="text-align: center;"  *ngIf="dataTableConfig.config.PageTitle">{{configData.PageTitle}}</h4>
+            <p style="text-align: left;" *ngIf="dataTableConfig.config.Subtitle"><b>{{configData.Subtitle}}</b></p>
+            <span style="color:rgb(68, 67, 67)">Print Date : &nbsp; {{current_print_time}}</span>
+        </div>
+        <table style="border-collapse: collapse;" class="m-t-8" width="100%">
+            <tr>
+                <th style="border: 1px solid #bbbbbb;">S/N</th>
+                <th style="border: 1px solid #bbbbbb;" *ngFor="let item of columnsDisplayName">{{item}}</th>
+            </tr>
+            <tr *ngFor="let item of filterdData; let i = index">
+                <td style="border: 1px solid #bbbbbb;text-align:center">{{i+1}}</td>
+                <td style="border: 1px solid #bbbbbb;text-align:center" *ngFor="let field of columnsFieldName" >{{item[field]}}</td>
+            </tr>
+        </table>
+    </div> 

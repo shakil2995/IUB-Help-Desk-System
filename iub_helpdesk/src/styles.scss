@@ -1,0 +1,175 @@
+// @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+// Import Fuse core library
+@import "@fuse/scss/core";
+
+// Import app.theme.scss
+@import "app/app.theme";
+
+/* You can add global styles to this file, and also import other style files */
+// gantt styling start
+@import "dhtmlx-gantt/codebase/dhtmlxgantt.css"; 
+.gantt-chart{
+    position: relative;
+    width: 100%;
+    height: 600px;
+    
+}
+.weekend{ background: #dadada40 !important;}
+.gantt_task_line{
+    border-color: rgba(0, 0, 0, 0.25);
+}
+.gantt_task_line .gantt_task_progress {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+/* high */
+.gantt_task_line.high {
+    background-color:  #f57730;
+}
+.gantt_task_line.high .gantt_task_content {
+    color: #fff;
+}
+
+/* medium */
+.gantt_task_line.medium {
+    background-color: #03A9F4;
+}
+.gantt_task_line.medium .gantt_task_content {
+    color: #fff;
+}
+
+/* low */
+.gantt_task_line.low {
+    background-color: #e157de;
+}
+.gantt_task_line.low .gantt_task_content {
+    color: #fff;
+}
+
+.gantt_cal_ltext{
+    label{
+        margin-right: 15px;
+        input[type="radio"],input[type='checkbox']{
+            margin-right: 4px;
+        }
+    }
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+//  gantt styling end
+
+
+// for .mat-form-field outline size
+
+// .mat-form-field-flex > .mat-form-field-infix { padding: 2px 4px 8px 0px !important;}
+// .mat-form-field-label-wrapper { top: -1.5em; }
+
+// .mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float .mat-form-field-label {
+//     transform: translateY(-1.1em) scale(.75);
+//     width: 133.33333%;
+// }
+
+
+// for body class
+
+
+.mat-form-field {
+    width: 100%;
+    font-size: 12px;
+}
+.custom_dialog_css .mat-dialog-container{
+    padding: 0px;
+    margin: 0px;
+}
+
+// .navbar-fuse-sidebar{
+//     margin-top: 5px;
+//     border-top-right-radius: 5px;
+// }
+
+// customiztion color css on theming based
+// body.theme-default{
+//     .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+//      color: #1a73e8;
+//     }
+//     .mat-fab.mat-accent, .mat-flat-button.mat-accent, .mat-mini-fab.mat-accent, .mat-raised-button.mat-accent, .mat-progress-bar.mat-accent {
+//         // background-color: #1a73e8;  
+//         background-color: #008e48; 
+//     }
+//     a{
+//         color: #1a73e8;
+//         // color: #4d981d;
+//     }
+//     .accent {
+//         background-color: #008e48 !important; 
+//     }
+// }
+
+// Truncate
+.text-truncate {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+
+.loading_css{
+    animation: routed 1s infinite;
+}
+
+@keyframes routed {
+    100%{
+        transform: rotate(360deg);
+    }
+}
+
+@media print {
+    // @page {
+    //     size: A4;
+    //     margin: auto; 
+    //   }
+    .print_container{
+        width: 100%;
+        .print_heading{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .print_heading h1{
+            text-align: center;
+        }
+        .print_content table,.print_content table td,.print_content table th{
+            border: 1px solid #cccccc;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        .print_content{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .print_content caption{
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center;
+            font-size: 20px;
+        }
+        .print_content table{
+            flex: 1 0 auto;  
+        }
+    }
+    
+}

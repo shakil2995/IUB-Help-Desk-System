@@ -1,0 +1,178 @@
+<div class="users_container" @fadeInOut>
+    <div fxLayout="row" class="heading" fxLayoutAlign="space-between center" >
+        <h1 class="title" fxFlex>Employee List</h1>
+        <div fxFlex fxLayout="row" fxLayoutAlign="end center" fxLayoutGap="2px">
+            <button mat-icon-button matTooltip="List View" matTooltipPosition="above" (click)="list_mode = true">
+                <mat-icon>view_list</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Grid View" matTooltipPosition="above" (click)="list_mode = false">
+                <mat-icon>view_module</mat-icon>
+            </button>
+            <button mat-stroked-button matTooltip="Add New Client" matTooltipPosition="above" class="add_button" (click)="create_new()">
+                <mat-icon>add</mat-icon>
+                <span>Add Employee</span>
+            </button>
+        </div>
+     </div>
+    <div fxLayout="row" fxLayoutAlign="space-between start" fxLayoutGap="16px" class="search_section">
+        <div class="search_bar" fxFlex="70" fxLayout="row"  fxLayoutAlign="space-between start" fxLayoutGap="16px"  >
+            <mat-form-field fxFlex="1 0 auto"  appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput  [formControl]="search" placeholder="Type here to search">
+                <mat-icon matPrefix>search</mat-icon>
+            </mat-form-field>
+            <mat-form-field fxFlex="0 1 auto">
+                <mat-select [(ngModel)]="filterselect"  (selectionChange)="filterCriteriaChange()">
+                    <mat-option *ngFor="let item of filter" [value]="item.val">
+                        {{item.view}}
+                    </mat-option>
+                </mat-select>
+             </mat-form-field>
+        </div>
+        <div class="export_section" fxFlex fxLayout="row" fxLayoutGap="16px" fxLayoutAlign="end start">
+            <button mat-mini-fab color="accent" matTooltip="Print" matTooltipPosition="above" [useExistingCss]="true"  mat-icon-button printSectionId="print-section" ngxPrint>
+                <mat-icon>print</mat-icon>
+            </button>
+            <button mat-mini-fab color="accent" matTooltip="Export in Excel" (click)="excelExport()" matTooltipPosition="above">
+                <mat-icon>get_app</mat-icon>
+            </button>
+       
+        </div>
+    </div>
+    <div  class="grid-view table_container" [hidden]="!list_mode" >
+        <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-table fxFlex #table matSort [dataSource]="table_material_data" [@animateStagger]="{value:'50'}">
+
+                <!-- Avatar Column -->
+                <ng-container matColumnDef="avatar">
+                    <mat-header-cell *matHeaderCellDef>Avatar</mat-header-cell>
+                    <mat-cell *matCellDef="let contact">
+                        <img class="avatar" src="{{contact.profile_image ? '/assets/uploads/pictures/'+contact.profile_image : 'assets/images/avatars/profile.jpg'}}"/>
+                    </mat-cell>
+                </ng-container>
+                
+                <!-- Data Column (using loop)-->
+                <ng-container *ngFor="let column of displayedColumns" matColumnDef="{{column.field}}">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{column.display}}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <p class="text-truncate font-weight-400">{{element[column.field]}}</p>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Status -->
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef >Active Status</mat-header-cell>
+                    <mat-cell *matCellDef="let contact" >
+                        <p class="text-truncate">{{contact.is_active == 0 ? "Inactive" : "Active"}}</p>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- details Column -->
+                <ng-container matColumnDef="details">
+                    <mat-header-cell *matHeaderCellDef>Details</mat-header-cell>
+                    <mat-cell *matCellDef="let element; let i = index">
+                        <div fxFlex="row" fxLayoutAlign="center center">
+                            <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                                    (click)="$event.stopPropagation();">
+                                <mat-icon class="secondary-text">more_vert</mat-icon>
+                            </button>
+                            <mat-menu #moreMenu="matMenu">
+                                <button mat-menu-item aria-label="remove" (click)="viewDetails(element)">
+                                    <mat-icon>description</mat-icon>
+                                    <span>Details</span>
+                                </button>
+                                <button mat-menu-item aria-label="remove" (click)="edit(element)">
+                                    <mat-icon>edit</mat-icon>
+                                    <span>Update</span>
+                                </button>
+                                <button mat-menu-item aria-label="remove" (click)="employee_delete(element,i)">
+                                    <mat-icon>delete</mat-icon>
+                                    <span>Remove</span>
+                                </button>
+                            </mat-menu>
+                        </div>
+
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="columnsDefinations"></mat-header-row>
+                <mat-row *matRowDef="let contact; columns: columnsDefinations;" matRipple
+                        [@animate]="{value:'*',params:{y:'100%'}}">
+                </mat-row>
+            </mat-table>
+        </div>
+        <div>
+         
+            <mat-paginator  [pageSizeOptions]="[5,7,10,20]" showFirstLastButtons>
+            </mat-paginator>
+        </div>
+    </div>
+    <div class="list-view"  [hidden]="list_mode">
+        <div fxLayout="row wrap" [@animateStagger]="{value:'50'}" fxLayoutAlign="center start" fxLayoutGap="40px" *ngIf="table_material_data">
+           
+            <div  [@animate]="{value:'*',params:{y:'100%'}}" class="view_card"  *ngFor="let item of table_material_data?.filteredData">
+                <div  fxLayout="row" fxLayoutAlign="end start">
+                    <button mat-icon-button [matMenuTriggerFor]="moreMenu2" aria-label="More"
+                    (click)="$event.stopPropagation();">
+                        <mat-icon class="secondary-text">more_vert</mat-icon>
+                    </button>
+                <mat-menu #moreMenu2="matMenu">
+                    <button mat-menu-item aria-label="remove" (click)="viewDetails(item)">
+                        <mat-icon>description</mat-icon>
+                        <span>Details</span>
+                    </button>
+                    <button mat-menu-item aria-label="remove" (click)="edit(item)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Update</span>
+                    </button>
+                    <button mat-menu-item aria-label="remove" (click)="employee_delete(item)">
+                        <mat-icon>delete</mat-icon>
+                        <span>Remove</span>
+                    </button>
+                </mat-menu>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="center start">
+                        <img class="picture" src="{{item.profile_image ? '/assets/uploads/pictures/'+item.profile_image : 'assets/images/avatars/profile.jpg'}}" />
+                </div>
+                <div class="text_area">
+                    <p style="text-align: center;">{{item.name}}</p>
+                    <p style="text-align: center;line-height: 5px;">{{item.mobile}}</p>
+                   <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="8px">
+                    <button mat-stroked-button  ><a href="mailto:{{item.email}}">Email</a></button>
+                    <button mat-stroked-button (click)="viewDetails(item)()">View profile</button>
+                   </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p style="text-align: center;" *ngIf="!data?.length">No Data Found</p>
+    </div>
+</div>
+
+<div style="display: none;" id="print-section">
+    <div class="print_container">
+        <div class="print_heading">
+            <h1>Employee List</h1>
+        </div>
+        <div class="print_content">
+            <table id="excel_sheet">
+                <thead>
+                    <tr>
+                        <th *ngFor="let item of displayedColumns">
+                            {{item.display}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of table_material_data?.filteredData">
+                        <td *ngFor="let column of displayedColumns">
+                            {{item[column.field]}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

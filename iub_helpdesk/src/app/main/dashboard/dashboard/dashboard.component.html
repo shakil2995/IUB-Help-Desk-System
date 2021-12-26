@@ -1,0 +1,132 @@
+<div class="dashboard_container w-100-p h-100-p">
+    <div fxLayout="row" fxLayoutAlign="space-around center">
+        <google-chart style="width: 900px; height: 350px;"
+            [title]="pieChart.title"
+            [type]="pieChart.type"
+            [data]="pieChart.data"
+            [columns]="pieChart.columnNames"
+            [options]="pieChart.options"
+        >
+      </google-chart>
+      
+    </div>
+    <div class="TaskList">
+        <h2>Tickets Summary</h2>
+        <div class="container">
+            <!-- <div fxLayout="row" fxLayoutGap="15px" fxLayoutAlign="space-between center">
+                <span fxFlex="12">Overall Progress</span>
+                <mat-progress-bar fxFlex id="project_progressbar"
+                    mode="determinate"
+                    [value]="20" >
+                </mat-progress-bar>
+                <span fxFlex="8">{{'20%'}}</span>
+            </div> -->
+            <div class="tabs_container" fxLayout="row wrap" fxLayoutAlign="space-between start" >
+                <div class="tabs pending">
+                    <div class="heading" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="title">Open ( {{open_ticket?.length}} )</span>
+                        <span class="icon">
+                            <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+                        </span>
+                    </div>
+                    <div class="tasks_container" fxLayout="column">
+                        <div class="tasks"  *ngFor="let item of open_ticket">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <span class="title" (click)="navigateTo(item)">{{item.ticket_id}}</span>
+                                <div class="priority" [ngClass]="{'high': item.priority == 'high','normal': item.priority == 'medium','low': item.priority == 'low'}">
+                                    <span>{{item.priority}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="empty_data" *ngIf="!open_ticket?.length">No  ticket</h6>
+                    </div>
+                    
+                </div>
+                <div class="tabs inprogress">
+                    
+                    <div class="heading" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="title">In-progress ( {{in_progress_ticket?.length}} )</span>
+                        <span class="icon">
+                            <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+                        </span>
+                    </div>
+                    <div class="tasks_container" fxLayout="column">
+                        <div class="tasks"  *ngFor="let item of in_progress_ticket">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <span class="title" (click)="navigateTo(item)">{{item.ticket_id}}</span>
+                                <div class="priority" [ngClass]="{'high': item.priority == 'high','normal': item.priority == 'medium','low': item.priority == 'low'}">
+                                    <span>{{item.priority}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="empty_data" *ngIf="!in_progress_ticket?.length">No  ticket</h6>
+                    </div>
+                    
+                </div>
+                <div class="tabs complete">
+                    
+                    <div class="heading" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="title">Done ( {{done_ticket?.length}} )</span>
+                        <span class="icon">
+                            <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+                        </span>
+                    </div>
+                    <div class="tasks_container" fxLayout="column">
+                        <div class="tasks"  *ngFor="let item of done_ticket">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <span class="title" (click)="navigateTo(item)">{{item.ticket_id}}</span>
+                                <div class="priority" [ngClass]="{'high': item.priority == 'high','normal': item.priority == 'medium','low': item.priority == 'low'}">
+                                    <span>{{item.priority}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="empty_data" *ngIf="!done_ticket?.length">No  ticket</h6>
+                    </div>
+                    
+                </div> 
+                <div class="tabs hold">
+
+                    <div class="heading" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="title">Review ( {{review_ticket?.length}} )</span>
+                        <span class="icon">
+                            <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+                        </span>
+                    </div>
+                    <div class="tasks_container" fxLayout="column">
+                        <div class="tasks"  *ngFor="let item of review_ticket">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <span class="title" (click)="navigateTo(item)">{{item.ticket_id}}</span>
+                                <div class="priority" [ngClass]="{'high': item.priority == 'high','normal': item.priority == 'medium','low': item.priority == 'low'}">
+                                    <span>{{item.priority}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="empty_data" *ngIf="!done_ticket?.length">No  ticket</h6>
+                    </div>
+
+                </div>
+                <div class="tabs cancelled">
+
+                    <div class="heading" fxLayout="row" fxLayoutAlign="space-between center">
+                        <span class="title">Cancelled ( {{cancelled?.length}} )</span>
+                        <span class="icon">
+                            <button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+                        </span>
+                    </div>
+                    <div class="tasks_container" fxLayout="column">
+                        <div class="tasks"  *ngFor="let item of cancelled">
+                            <div fxLayout="row" fxLayoutAlign="space-between start">
+                                <span class="title" (click)="navigateTo(item)">{{item.ticket_id}}</span>
+                                <div class="priority" [ngClass]="{'high': item.priority == 'high','normal': item.priority == 'medium','low': item.priority == 'low'}">
+                                    <span>{{item.priority}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="empty_data" *ngIf="!cancelled?.length">No  ticket</h6>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
